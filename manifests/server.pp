@@ -6,11 +6,14 @@
 #
 # == Parameters
 # $jmx_port            - JMX port.    Set this to false if you don't want to expose JMX.
-# $log_file            - zookeeper.log file.    Default: /var/log/zookeeper/zookeeper.log
+# $cleanup_count       - If this is > 0, this installs a cron to cleanup transaction
+#                        and snapshot logs.  zkCleanup.sh - $cleanup_count will be run daily.
+#                        Default: 10
 #
 class zookeeper::server(
     $jmx_port         = $::zookeeper::defaults::jmx_port,
-    $log_file         = $::zookeeper::defaults::log_file,
+    $cleanup_count    = $::zookeeper::defaults::cleanup_count,
+    $cleanup_script   = $::zookeeper::defaults::cleanup_script,
     $default_template = $::zookeeper::defaults::default_template,
     $log4j_template   = $::zookeeper::defaults::log4j_template
 )
@@ -67,4 +70,15 @@ class zookeeper::server(
         ],
     }
 
+    cron { 'zookeeper-cleanup':
+        command => "${cleanup_script} -n ${cleanup_count}",
+        hour    => 0,
+        user    => 'zookeeper',
+        require => Service['zookeeper'],
+    }
+
+    # if !$cleanup_count, then ensure this cron is absent.
+    if (!$cleanup_count or $cleanup_count <= 0) {
+        Cron['zookeeper-cleanup'] { ensure => 'absent' }
+    }
 }
