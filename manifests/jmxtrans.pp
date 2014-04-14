@@ -17,7 +17,7 @@
 #     ganglia => 'ganglia.example.org:8649'
 # }
 #
-class zookeeper::server::jmxtrans(
+class zookeeper::jmxtrans(
     $jmx_port       = $zookeeper::defaults::jmx_port,
     $ganglia        = undef,
     $graphite       = undef,
