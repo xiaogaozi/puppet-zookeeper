@@ -7,23 +7,12 @@
 # == Parameters
 # $jmx_port            - JMX port.    Set this to false if you don't want to expose JMX.
 #
-# $tick_time           - The length of a single tick, which is the basic time unit used by
-#                        ZooKeeper, as measured in milliseconds.  Default: 2000
-#
-# $init_limit          - Amount of time in ticks to allow followers to connect and sync to
-#                        a leader.  Default: 10
-#
-# $sync_limit          - Amount of tim to allow followers to sync with ZooKeeper.  Default: 5
-#
 # $cleanup_count       - If this is > 0, this installs a cron to cleanup transaction
 #                        and snapshot logs.  zkCleanup.sh - $cleanup_count will be run daily.
 #                        Default: 10
 #
 class zookeeper::server(
     $jmx_port         = $::zookeeper::defaults::jmx_port,
-    $tick_time        = $::zookeeper::defaults::tick_time,
-    $init_limit       = $::zookeeper::defaults::init_limit,
-    $sync_limit       = $::zookeeper::defaults::sync_limit,
     $cleanup_count    = $::zookeeper::defaults::cleanup_count,
     $cleanup_script   = $::zookeeper::defaults::cleanup_script,
     $default_template = $::zookeeper::defaults::default_template,

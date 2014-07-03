@@ -3,8 +3,19 @@
 #
 # == Parameters
 # $hosts         - Hash of zookeeper fqdns to myids.
+#
 # $data_dir      - Zookeeper dataDir.     Default: /var/lib/zookeeper
+#
 # $data_log_dir  - Zookeeper dataLogDir.  Default: undef.
+#
+# $tick_time     - The length of a single tick, which is the basic time unit used by
+#                  ZooKeeper, as measured in milliseconds.  Default: 2000
+#
+# $init_limit    - Amount of time in ticks to allow followers to connect and sync to
+#                  a leader.  Default: 10
+#
+# $sync_limit    - Amount of tim to allow followers to sync with ZooKeeper.  Default: 5
+#
 # $version       - Zookeeper package version number.  Set this if you need to
 #                  override the default package version.  Default: installed.
 #
@@ -36,6 +47,9 @@ class zookeeper(
     $hosts         = $::zookeeper::defaults::hosts,
     $data_dir      = $::zookeeper::defaults::data_dir,
     $data_log_dir  = $::zookeeper::defaults::data_log_dir,
+    $tick_time     = $::zookeeper::defaults::tick_time,
+    $init_limit    = $::zookeeper::defaults::init_limit,
+    $sync_limit    = $::zookeeper::defaults::sync_limit,
     $conf_template = $::zookeeper::defaults::conf_template,
     $version       = $::zookeeper::defaults::version
 ) inherits zookeeper::defaults
