@@ -25,16 +25,16 @@ dataDir=<%= data_dir %>
 <%= @data_log_dir ? "dataLogDir=#{data_log_dir}" : '# dataLogDir=/disk2/zookeeper' %>
 
 
-# The number of milliseconds of each tick
-tickTime=2000
+# The number of milliseconds of each tick.
+tickTime=<%= @tick_time %>
 
 # The number of ticks that the initial
-# synchronization phase can take
-initLimit=10
+# synchronization phase can take.
+initLimit=<%= @init_limit %>
 
 # The number of ticks that can pass between
 # sending a request and getting an acknowledgement
-syncLimit=5
+syncLimit=<%= @sync_limit %>
 
 # To avoid seeks ZooKeeper allocates space in the transaction log file in
 # blocks of preAllocSize kilobytes. The default block size is 64M. One reason

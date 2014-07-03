@@ -9,6 +9,10 @@ class zookeeper::defaults {
     $cleanup_count    = 10
     $cleanup_script   = '/usr/share/zookeeper/bin/zkCleanup.sh'
 
+    $tick_time        = 2000
+    $init_limit       = 10
+    $sync_limit       = 5
+
     # Default puppet paths to template config files.
     # This allows us to use custom template config files
     # if we want to override more settings than this
