@@ -29,12 +29,12 @@ class zookeeper::server(
 
     file { '/etc/default/zookeeper':
         content => template($default_template),
-        require => Package['zookeeperd'],
+        require => Package['zookeeper-server'],
     }
 
     file { '/etc/zookeeper/conf/log4j.properties':
         content => template($log4j_template),
-        require => Package['zookeeperd'],
+        require => Package['zookeeper-server'],
     }
 
     file { $::zookeeper::data_dir:
@@ -57,7 +57,7 @@ class zookeeper::server(
     service { 'zookeeper':
         ensure     => running,
         require    => [
-            Package['zookeeperd'],
+            Package['zookeeper-server'],
             File[ $::zookeeper::data_dir],
             File["${::zookeeper::data_dir}/myid"],
         ],
