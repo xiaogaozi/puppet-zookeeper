@@ -1,35 +1,35 @@
-# Puppet Zookeeper Module
+# Puppet ZooKeeper Module
 
-Installs and configures a Zookeeper client and/or Zookeeper server.
+Installs and configures a ZooKeeper client and/or ZooKeeper server.
 
 This module has been implemented and tested on Ubuntu Precise, and uses
-the Zookeeper package in upstream Debian/Ubuntu repositories.
+the ZooKeeper package in CDH repositories.
 
 # Usage
 
 ```puppet
 class { 'zookeeper':
-    hosts    => { 'zoo1.domain.org' => 1, 'zoo2.domain.org' => 2, 'zoo3.domain.org' => 3 },
-    data_dir => '/var/lib/zookeeper',
+  hosts    => { 'zoo1.domain.org' => 1, 'zoo2.domain.org' => 2, 'zoo3.domain.org' => 3 },
+  data_dir => '/var/lib/zookeeper'
 }
 ```
 
-The above setup should be used to configure a 3 node zookeeper cluster.
+The above setup should be used to configure a 3 node ZooKeeper cluster.
 You can include the above class on any of your nodes that will need to talk
-to the zookeeper cluster.
+to the ZooKeeper cluster.
 
-On the 3 zookeeper server nodes, you should also include:
+On the 3 ZooKeeper server nodes, you should also include:
 
 ```puppet
 class { 'zookeeper::server': }
 ```
 
-This will ensure that the zookeeper server is running.
+This will ensure that the ZooKeeper server is running.
 Remember that this requires that you also include the
-zookeeper class as defined above as well as the server class.
+ZooKeeper class as defined above as well as the server class.
 
-On each of the defined zookeeper hosts, a myid file must be created
-that identifies the host in the zookeeper quorum.  This myid number
+On each of the defined ZooKeeper hosts, a myid file must be created
+that identifies the host in the ZooKeeper quorum.  This myid number
 will be extracted from the hosts Hash keyed by the node's $fqdn.
 E.g.  zoo1.domain.org's myid will be '1', zoo2.domain.org's myid will be 2, etc.
 

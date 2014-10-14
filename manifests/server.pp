@@ -23,7 +23,7 @@ class zookeeper::server(
     Class['zookeeper'] -> Class['zookeeper::server']
 
     # Install zookeeper server package
-    package { 'zookeeperd':
+    package { 'zookeeper-server':
         ensure    => $::zookeeper::version,
     }
 
