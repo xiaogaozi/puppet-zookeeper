@@ -54,7 +54,7 @@ class zookeeper::server(
         target  => '/etc/zookeeper/conf/myid',
     }
 
-    service { 'zookeeper':
+    service { 'zookeeper-server':
         ensure     => running,
         require    => [
             Package['zookeeper-server'],
@@ -75,7 +75,7 @@ class zookeeper::server(
         command => "${cleanup_script} -n ${cleanup_count}",
         hour    => 0,
         user    => 'zookeeper',
-        require => Service['zookeeper'],
+        require => Service['zookeeper-server'],
     }
 
     # if !$cleanup_count, then ensure this cron is absent.
