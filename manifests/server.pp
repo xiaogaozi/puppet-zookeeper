@@ -1,15 +1,23 @@
-# == Class zookeeper::server
-# Configures a zookeeper server.
-# This requires that zookeeper is installed
-# And that the current nodes fqdn is an entry in the
+# == Class: zookeeper::server
+#
+# Configures a ZooKeeper server.
+# This requires that ZooKeeper is installed
+# And that the current nodes hostname is an entry in the
 # $::zookeeper::hosts array.
 #
-# == Parameters
-# $jmx_port            - JMX port.    Set this to false if you don't want to expose JMX.
+# === Parameters
 #
-# $cleanup_count       - If this is > 0, this installs a cron to cleanup transaction
-#                        and snapshot logs.  zkCleanup.sh - $cleanup_count will be run daily.
-#                        Default: 10
+# [*jmx_port*]
+#   JMX port. Set this to false if you don't want to expose JMX.
+#
+# [*cleanup_count*]
+#   If this is > 0, this installs a cron to cleanup transaction
+#   and snapshot logs. +/usr/bin/zookeeper-server-cleanup -n $cleanup_count+
+#   will be run daily. Default: 10
+#
+# === Examples
+#
+#  include zookeeper::server
 #
 class zookeeper::server(
   $jmx_port         = $::zookeeper::defaults::jmx_port,
@@ -19,10 +27,10 @@ class zookeeper::server(
   $log4j_template   = $::zookeeper::defaults::log4j_template
 )
 {
-  # need zookeeper common package and config.
+  # need ZooKeeper common package and config.
   Class['zookeeper'] -> Class['zookeeper::server']
 
-  # Install zookeeper server package
+  # Install ZooKeeper server package
   package { 'zookeeper-server':
     ensure => $::zookeeper::version,
   }
@@ -44,8 +52,8 @@ class zookeeper::server(
     mode   => '0755',
   }
 
-  # Get this host's $myid from the $fqdn in the $zookeeper_hosts hash.
-  $myid = $::zookeeper::hosts[$::fqdn]
+  # Get this host's $myid from the $hostname in the $zookeeper_hosts hash.
+  $myid = $::zookeeper::hosts[$::hostname]
   file { '/etc/zookeeper/conf/myid':
     content => $myid,
   }
