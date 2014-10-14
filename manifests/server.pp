@@ -12,74 +12,81 @@
 #                        Default: 10
 #
 class zookeeper::server(
-    $jmx_port         = $::zookeeper::defaults::jmx_port,
-    $cleanup_count    = $::zookeeper::defaults::cleanup_count,
-    $cleanup_script   = $::zookeeper::defaults::cleanup_script,
-    $default_template = $::zookeeper::defaults::default_template,
-    $log4j_template   = $::zookeeper::defaults::log4j_template
+  $jmx_port         = $::zookeeper::defaults::jmx_port,
+  $cleanup_count    = $::zookeeper::defaults::cleanup_count,
+  $cleanup_script   = $::zookeeper::defaults::cleanup_script,
+  $default_template = $::zookeeper::defaults::default_template,
+  $log4j_template   = $::zookeeper::defaults::log4j_template
 )
 {
-    # need zookeeper common package and config.
-    Class['zookeeper'] -> Class['zookeeper::server']
+  # need zookeeper common package and config.
+  Class['zookeeper'] -> Class['zookeeper::server']
 
-    # Install zookeeper server package
-    package { 'zookeeper-server':
-        ensure    => $::zookeeper::version,
-    }
+  # Install zookeeper server package
+  package { 'zookeeper-server':
+    ensure => $::zookeeper::version,
+  }
 
-    file { '/etc/default/zookeeper':
-        content => template($default_template),
-        require => Package['zookeeper-server'],
-    }
+  file { '/etc/default/zookeeper':
+    content => template($default_template),
+    require => Package['zookeeper-server']
+  }
 
-    file { '/etc/zookeeper/conf/log4j.properties':
-        content => template($log4j_template),
-        require => Package['zookeeper-server'],
-    }
+  file { '/etc/zookeeper/conf/log4j.properties':
+    content => template($log4j_template),
+    require => Package['zookeeper-server'],
+  }
 
-    file { $::zookeeper::data_dir:
-        ensure => 'directory',
-        owner  => 'zookeeper',
-        group  => 'zookeeper',
-        mode   => '0755',
-    }
+  file { $::zookeeper::data_dir:
+    ensure => 'directory',
+    owner  => 'zookeeper',
+    group  => 'zookeeper',
+    mode   => '0755',
+  }
 
-    # Get this host's $myid from the $fqdn in the $zookeeper_hosts hash.
-    $myid = $::zookeeper::hosts[$::fqdn]
-    file { '/etc/zookeeper/conf/myid':
-        content => $myid,
-    }
-    file { "${::zookeeper::data_dir}/myid":
-        ensure  => 'link',
-        target  => '/etc/zookeeper/conf/myid',
-    }
+  # Get this host's $myid from the $fqdn in the $zookeeper_hosts hash.
+  $myid = $::zookeeper::hosts[$::fqdn]
+  file { '/etc/zookeeper/conf/myid':
+    content => $myid,
+  }
+  file { "${::zookeeper::data_dir}/myid":
+    ensure => 'link',
+    target => '/etc/zookeeper/conf/myid',
+  }
 
-    service { 'zookeeper-server':
-        ensure     => running,
-        require    => [
-            Package['zookeeper-server'],
-            File[ $::zookeeper::data_dir],
-            File["${::zookeeper::data_dir}/myid"],
-        ],
-        hasrestart => true,
-        hasstatus  => true,
-        subscribe  => [
-            File['/etc/default/zookeeper'],
-            File['/etc/zookeeper/conf/zoo.cfg'],
-            File['/etc/zookeeper/conf/myid'],
-            File['/etc/zookeeper/conf/log4j.properties'],
-        ],
-    }
+  exec { 'zookeeper-server-initialize':
+    command => 'service zookeeper-server init',
+    creates => '/var/lib/zookeeper/version-2',
+    user    => 'root',
+  }
 
-    cron { 'zookeeper-cleanup':
-        command => "${cleanup_script} -n ${cleanup_count}",
-        hour    => 0,
-        user    => 'zookeeper',
-        require => Service['zookeeper-server'],
-    }
+  service { 'zookeeper-server':
+    ensure     => running,
+    require    => [
+      Package['zookeeper-server'],
+      File[ $::zookeeper::data_dir],
+      File["${::zookeeper::data_dir}/myid"],
+      Exec['zookeeper-server-initialize']
+    ],
+    hasrestart => true,
+    hasstatus  => true,
+    subscribe  => [
+      File['/etc/default/zookeeper'],
+      File['/etc/zookeeper/conf/zoo.cfg'],
+      File['/etc/zookeeper/conf/myid'],
+      File['/etc/zookeeper/conf/log4j.properties'],
+    ],
+  }
 
-    # if !$cleanup_count, then ensure this cron is absent.
-    if (!$cleanup_count or $cleanup_count <= 0) {
-        Cron['zookeeper-cleanup'] { ensure => 'absent' }
-    }
+  cron { 'zookeeper-cleanup':
+    command => "${cleanup_script} -n ${cleanup_count}",
+    hour    => 0,
+    user    => 'zookeeper',
+    require => Service['zookeeper-server'],
+  }
+
+  # if !$cleanup_count, then ensure this cron is absent.
+  if (!$cleanup_count or $cleanup_count <= 0) {
+    Cron['zookeeper-cleanup'] { ensure => 'absent' }
+  }
 }

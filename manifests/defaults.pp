@@ -7,7 +7,7 @@ class zookeeper::defaults {
     $data_log_dir     = undef
     $jmx_port         = 9998
     $cleanup_count    = 10
-    $cleanup_script   = '/usr/share/zookeeper/bin/zkCleanup.sh'
+    $cleanup_script   = '/usr/bin/zookeeper-server-cleanup'
 
     $tick_time        = 2000
     $init_limit       = 10
