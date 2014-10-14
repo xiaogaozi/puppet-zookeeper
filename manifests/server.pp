@@ -45,35 +45,39 @@ class zookeeper::server(
   }
 
   file { $::zookeeper::data_dir:
-    ensure => 'directory',
-    owner  => 'zookeeper',
-    group  => 'zookeeper',
-    mode   => '0755',
+    ensure  => 'directory',
+    owner   => 'zookeeper',
+    group   => 'zookeeper',
+    mode    => '0755',
+    require => Package['zookeeper-server'],
   }
 
   # Get this host's $myid from the $hostname in the $zookeeper_hosts hash.
   $myid = $::zookeeper::hosts[$::hostname]
   file { '/etc/zookeeper/conf/myid':
     content => $myid,
+    require => Package['zookeeper-server'],
   }
   file { "${::zookeeper::data_dir}/myid":
-    ensure => 'link',
-    target => '/etc/zookeeper/conf/myid',
+    ensure  => 'link',
+    target  => '/etc/zookeeper/conf/myid',
+    require => File['/etc/zookeeper/conf/myid'],
   }
 
   exec { 'zookeeper-server-initialize':
     command => '/usr/sbin/service zookeeper-server init',
-    creates => '/var/lib/zookeeper/version-2',
+    creates => "${::zookeeper::data_dir}/version-2",
     user    => 'root',
+    require => [Package['zookeeper-server'], File[$::zookeeper::data_dir]],
   }
 
   service { 'zookeeper-server':
     ensure     => running,
     require    => [
       Package['zookeeper-server'],
-      File[ $::zookeeper::data_dir],
+      File[$::zookeeper::data_dir],
       File["${::zookeeper::data_dir}/myid"],
-      Exec['zookeeper-server-initialize']
+      Exec['zookeeper-server-initialize'],
     ],
     hasrestart => true,
     hasstatus  => true,
