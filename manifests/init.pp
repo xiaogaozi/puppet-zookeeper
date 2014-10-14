@@ -61,8 +61,7 @@ class zookeeper(
   $sync_limit    = $::zookeeper::defaults::sync_limit,
   $conf_template = $::zookeeper::defaults::conf_template,
   $version       = $::zookeeper::defaults::version
-) inherits zookeeper::defaults
-{
+) inherits zookeeper::defaults {
   package { 'zookeeper':
     ensure => $version,
   }

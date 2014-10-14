@@ -25,8 +25,7 @@ class zookeeper::server(
   $cleanup_script   = $::zookeeper::defaults::cleanup_script,
   $default_template = $::zookeeper::defaults::default_template,
   $log4j_template   = $::zookeeper::defaults::log4j_template
-)
-{
+) {
   # need ZooKeeper common package and config.
   Class['zookeeper'] -> Class['zookeeper::server']
 

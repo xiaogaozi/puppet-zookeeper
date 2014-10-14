@@ -38,8 +38,7 @@ class zookeeper::jmxtrans(
   $outfile      = undef,
   $run_interval = 15,
   $log_level    = 'info',
-) inherits zookeeper::defaults
-{
+) inherits zookeeper::defaults {
   $jmx = "${::hostname}:${jmx_port}"
 
   class {'::jmxtrans':
