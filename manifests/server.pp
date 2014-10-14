@@ -55,7 +55,7 @@ class zookeeper::server(
   }
 
   exec { 'zookeeper-server-initialize':
-    command => 'service zookeeper-server init',
+    command => '/usr/sbin/service zookeeper-server init',
     creates => '/var/lib/zookeeper/version-2',
     user    => 'root',
   }
