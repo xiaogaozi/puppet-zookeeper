@@ -79,6 +79,7 @@ class zookeeper::server(
       File["${::zookeeper::data_dir}/myid"],
       Exec['zookeeper-server-initialize'],
     ],
+    enable     => true,
     hasrestart => true,
     hasstatus  => true,
     subscribe  => [
