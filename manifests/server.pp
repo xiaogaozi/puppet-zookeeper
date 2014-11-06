@@ -52,8 +52,8 @@ class zookeeper::server(
     require => Package['zookeeper-server'],
   }
 
-  # Get this host's $myid from the $hostname in the $zookeeper_hosts hash.
-  $myid = $::zookeeper::hosts[$::hostname]
+  # Get this host's $myid from the $fqdn in the $zookeeper_hosts hash.
+  $myid = $::zookeeper::hosts[$::fqdn]
   file { '/etc/zookeeper/conf/myid':
     ensure  => 'present',
     content => $myid,
